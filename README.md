@@ -17,5 +17,14 @@ If you go to the report tab in retina, choose vulnerability export, and save the
 
 remediation.py
 
+Usage:
+python remediation.py <input.mht filename>
+remediation.exe <input.mht filename>
+asks for a report name and outputs to csv.
+
 
 Using the remediation tab in Retina, you can export a remediation report on each scan out to an MHT file.  The remediation.py script is a python script that will parse the data and produce a table in html (poorly) and csv that lists the CVEs found that have an exploit in Core Impact or Metasploit, which of  Core Impact or Metasploit have an exploit module for it (or both), how many systems are potentially affected, and what the IP addresses of those systems are.  This is useful for showing the accuracy or Retina and the protection capability of your AV/HIPS/etc.  Once the exploitation is done, go back through to see how many vulnerabilities retina reported that were not actually exploitable (false positives) and how many vulnerabilities that were successfully exploited that retina didn't report on (false negatives).  The results are pleasing, exciting, and surprising.
+
+I have to output many remediation reports, which leads to a lot of .mht files.  The script is setup that it doesn't care about the html formatting, so I cat the files into one with:  'cat *.mht >> output'.  I then rename the output file to a .mht and use it for parsing.  This way I can take all the scans and get one report file that is useful for my needs.
+
+I take the csv output and open with a spreadsheet editor.  I'll sort the data first by core exploit and then by metasploit exploit and color code those 'yes' lines.  I'll add a column so I can disposition each vulnerablity as client or network.  Then I'll add another column to show whether the exploit was successful or not.  I use this as a checksheet for my workflow to document where I am and to remember what worked.
