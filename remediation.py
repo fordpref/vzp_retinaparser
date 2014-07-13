@@ -181,7 +181,10 @@ def parse_for_exploits():
             ip = ip[1].split('\t')
             if len(cveloop) != 0:
                 for x in cveloop:
-                    exploit[x]['IP'].append(ip[0])
+                    if ip[0] in exploit[x]['IP']:
+                    	next
+                    else:
+                    	exploit[x]['IP'].append(ip[0])
             else:
                 next
         elif line.startswith('Notes:') == True and flagexploits == 1:
