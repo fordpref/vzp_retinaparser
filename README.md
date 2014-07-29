@@ -21,11 +21,14 @@ If you go to the report tab in retina, choose vulnerability export, and save the
  
   
 
+
+
+
 remediation.py
 
 Usage:
-python remediation.py <input.mht filename>
-remediation.exe <input.mht filename>
+python remediation.py inputfilename.mht
+remediation.exe inputfilename.mht
 asks for a report name and outputs to csv.
 
 1.  in Retina, go to remediation tab
@@ -35,11 +38,11 @@ asks for a report name and outputs to csv.
 
     a.  open a command prompt, go to the directory your mht files are in.
 
-    b.  cat *.mht >> <lumped file name>  (don't give it an extension unless you want to learn about recursion)
+    b.  cat *.mht >> lumpedfilename  (don't give it an extension unless you want to learn about recursion)
 
     c.  give the new lump file an mht extension
 
-5.  run remediation.exe <lumped file name>.mht
+5.  run remediation.exe lumpedfilename.mht
 6.  This will produce a .csv you open with excel, it asks for a file name and saves it.
 7.  I recommend that you add two columns, one for client/network exploit, and another for product.  Update it manually.
 
