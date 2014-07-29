@@ -32,9 +32,13 @@ asks for a report name and outputs to csv.
 2.  generate the report for each job you want to parse
 3.  save each job as a single file html document (.mht)
 4.  if you need to save out multiple mht files (and why not?) no worries.
+
     a.  open a command prompt, go to the directory your mht files are in.
+
     b.  cat *.mht >> <lumped file name>  (don't give it an extension unless you want to learn about recursion)
+
     c.  give the new lump file an mht extension
+
 5.  run remediation.exe <lumped file name>.mht
 6.  This will produce a .csv you open with excel, it asks for a file name and saves it.
 7.  I recommend that you add two columns, one for client/network exploit, and another for product.  Update it manually.
