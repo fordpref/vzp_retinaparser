@@ -11,58 +11,59 @@
 ##
 # Import modules
 ##
-import sys
+import sys, msvcrt
 
 ##
 # Global Variables
 ##
-cfile = sys.argv[1] #command line argument
+cfile = "" #command line argument
 cfile_obj = ""      #Retina MHT file
 remediation = []    #variable to hold retina report 
 exploit = {}       #Hash list dictionary to hold exploits
 
 def evalsysargv():
-	"""
-	Function to evaluate the command line arguments and 
-	read the remediation report MHT file called
-	remediation[].
-	"""
+    """
+    Function to evaluate the command line arguments and 
+    read the remediation report MHT file called
+    remediation[].
+    """
 
-	global cfile, cfile_obj, remediation
+    global cfile, cfile_obj, remediation
 
-	i = 0
-	line = ""
+    i = 0
+    line = ""
 
-	if len(sys.argv) < 2:
-		cfile = raw_input("Enter remediation MHT file path and name: ");
-	cfile_obj = open(cfile,'r')
-	for line in cfile_obj:
-		remediation.append(line)
- 	return
+    if len(sys.argv) < 2:
+        cfile = raw_input("Enter remediation MHT file path and name: ");
+    else:
+        cfile = sys.argv[1]
+    cfile_obj = open(cfile,'r')
+    for line in cfile_obj:
+        remediation.append(line)
+    return
 
 def printfile():
-	"""
-	Just a test function, can be removed
-	"""
+    """
+    Just a test function, can be removed
+    """
 
-	global remediation
-	for line in remediation:
-		print line
-	return
+    global remediation
+    for line in remediation:
+            print line
+    return
 
 def printstuff(obj):
-	"""
-	Just a test function, can be removed
-	"""
+    """
+    Just a test function, can be removed
+    """
 
-	print obj,"\ntest print\n\n"
-	return
+    print obj,"\ntest print\n\n"
+    return
 
 
 
 
 def parse_for_exploits():
-    #retina = open('vlan10-AUTH.mht', 'r')
     global remediation, exploit
     flagexploits = 0
     flagcves = 0
@@ -73,6 +74,7 @@ def parse_for_exploits():
     ip = []
     cveloop = []
     cvecount = 0
+    vulnname = ''
 
 
     for line in remediation:
@@ -82,6 +84,12 @@ def parse_for_exploits():
         """
         if line.startswith('\t') == True:
             line = line[1:]
+        if line.startswith(' \t \n') == True:
+            continue
+        elif line.startswith(' \t ') == True:
+            line = line[3:-1]
+            vulnname=line
+            continue
         if line.startswith('CVE-ID') == True:
             continue
         if line.startswith('Total') == True:
@@ -116,6 +124,8 @@ def parse_for_exploits():
                 exploit[cve[0]] = {}
                 exploit[cve[0]]['CVE Assignment'] = cve[0]
                 exploit[cve[0]]['IP'] = []
+                exploit[cve[0]]['VulnName'] = vulnname
+                exploit[cve[0]]['Vector'] = ""
             
             ##
             # Since there can be multiple CVEs in each report section, we track the keys to append IPs later
@@ -201,31 +211,41 @@ def parse_for_exploits():
             cveloop = []
 
 def report():
-	"""
-	Now we want to take the exploit dict variable and print a CSV and HTM table with results.
-	"""
-	global exploit
-	
+    """
+    Now we want to take the exploit dict variable and print a CSV and HTM table with results.
+    """
+    global exploit
+    keyboard = 0
 
-	reports = raw_input("\n\nReport Name: ")
-	#htmfile = open(reports + ".htm",'w')
-	csvfile = open(reports + ".csv",'w')
+    reports = raw_input("\n\nReport Name: ")
+    csvfile = open(reports + ".csv",'w')
 
-	#htmfile.write("<!DOCTYPE html>\n<html>\n<body>\n<p>\n")
-	
-	#Write out Header for report
-	#htmfile.write("<p><font size=""20""><b>"+reports+"</b></font><br><br></p>\n")
-        csvfile.write('CVE-Assignment,ExploitDB,CoreImpact,Metasploit,IPAddreses\n')
+    print '\n\n\nWe need some input from you to make this whole thing easier.\n'
+    print 'We are going to print each vulnerability name'
+    print 'then ask you to hit "c" for client side vulnerability'
+    print 'or "n" for network vulnerability.'
+    print 'Just give your best guess:\n\n'
+    
 
-	#htmfile.write('<font size="5"><p><table border="1"><b><tr><td> CVE </td><td> Core Impact </td><td> Metasploit </td><td> # Afflicted </td><td> Machines Affected </td></b></tr>\n')
-        
+    csvfile.write('CVE-Assignment,VulnName,Vector,SuccessfulExploit,ExploitDB,CoreImpact,Metasploit,IPAddreses\n')
 
-	for key in sorted(exploit.iterkeys()):
-            if exploit[key]['ExploitDB'] == 'Yes' or exploit[key]['CoreImpact'] == 'Yes' or exploit[key]['Metasploit'] == 'Yes':
-		#htmfile.write('<tr><td>' + key + '</td><td>' + exploits[key]['Core Impact'] + '</td><td>' + exploits[key]['Metasploit'] + '</td><td>' + exploits[key]['Total'] + '</td><td>' + (",".join(exploits[key]['machines'])) + '</td</tr>\n')
-		csvfile.write(exploit[key]['CVE Assignment'] + "," + exploit[key]['ExploitDB'] + "," + exploit[key]['CoreImpact'] + "," + exploit[key]['Metasploit'] + "," + (",".join(exploit[key]['IP'])) + "\n")
-	
-	#htmfile.write("</table></p></font></body>")
+    for key in sorted(exploit.iterkeys()):
+        if exploit[key]['ExploitDB'] == 'Yes' or exploit[key]['CoreImpact'] == 'Yes' or exploit[key]['Metasploit'] == 'Yes':
+            print key + '\t' + exploit[key]['VulnName']
+            print 'Hit "c" for client or "n" for network or "q" to quit\n'
+            while True:
+            #    if msvcrt.kbhit():
+                keyboard = ord(msvcrt.getch())
+                if keyboard == 99:
+                    exploit[key]['Vector'] = 'Client'
+                    break
+                elif keyboard == 110:
+                    exploit[key]['Vector'] = 'Network'
+                    break
+                elif keyboard == 113:
+                    exit()
+                        
+            csvfile.write(exploit[key]['CVE Assignment'] + "," + exploit[key]['VulnName'] + "," +exploit[key]['Vector'] + "," + "," + exploit[key]['ExploitDB'] + "," + exploit[key]['CoreImpact'] + "," + exploit[key]['Metasploit'] + "," + (",".join(exploit[key]['IP'])) + "\n")
 
 
 
