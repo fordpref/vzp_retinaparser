@@ -1,7 +1,15 @@
-vzp_retinaparser
-================
+vzp_vulnscan_parsers
+====================
 
-Retina produces two reports that are brutally useful for analysts but could use some reformatting and hefty occam's razor to get useful info from.
+I work with a few different reports from Retina and Nessus.  In their default state, neither are really immediately useful for penetration testing.  So I've tried to put together a few things that help me reformat the output and get to what is most important to me, what can I exploit, and how do I help the customer prioritize their remediation efforts?
+
+vzp-vulnexp-macro.bas - Just an Excel macro to reformat Retina's Vulnerability Export report .xml file.
+
+vzp_retina.py/.exe -    Python script for pentesters to take Retina's Remediation report to .mht and show CVE's with exploits and what frameworks have working exploits.
+
+vzp_nessus.py/.exe -    Python script for pentesters to take Nessus .nessus xml and show CVE's with exploits and what frameworks have working exploits.
+
+
 
 vzp-vulnexp-macro.bas
 
