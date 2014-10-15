@@ -62,3 +62,21 @@ Using the remediation tab in Retina, you can export a remediation report on each
 I have to output many remediation reports, which leads to a lot of .mht files.  The script is setup that it doesn't care about the html formatting, so I cat the files into one with:  'cat *.mht >> output'.  I then rename the output file to a .mht and use it for parsing.  This way I can take all the scans and get one report file that is useful for my needs.
 
 I take the csv output and open with a spreadsheet editor.  I'll sort the data first by core exploit and then by metasploit exploit and color code those 'yes' lines.  I'll add a column so I can disposition each vulnerablity as client or network.  Then I'll add another column to show whether the exploit was successful or not.  I use this as a checksheet for my workflow to document where I am and to remember what worked.
+
+
+
+
+nessus.py/exe readme
+====================
+
+Usage:
+
+python nessus.py \<path-to-nessus-reports\> \<report output name\>.csv
+nessus.exe \<path-to-nessus-reports\> \<report output name\>.csv
+
+
+It will check the path and report name, then parse all the .nessus files in the directory you specify and output a .csv file.
+
+It will ask you to evaluate each exploitable finding on whether it is a network facing exploit (ie, service, no user interaction) or whether it is a client side/local exploit (ie must already be on the system or have user go to website or open file).
+
+the CSV file lists the CVEs from the nessus report file that have exploits available, what exploit frameworks have them, and what IPs are affected.  The output also includes a column for you to track whether you successfully exploited the finding or not.
