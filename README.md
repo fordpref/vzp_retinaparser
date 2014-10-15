@@ -3,15 +3,15 @@ vzp_vulnscan_parsers
 
 I work with a few different reports from Retina and Nessus.  In their default state, neither are really immediately useful for penetration testing.  So I've tried to put together a few things that help me reformat the output and get to what is most important to me, what can I exploit, and how do I help the customer prioritize their remediation efforts?
 
-vzp-vulnexp-macro.bas - Just an Excel macro to reformat Retina's Vulnerability Export report .xml file.
+retinamacro.bas - Just an Excel macro to reformat Retina's Vulnerability Export report .xml file.
 
-vzp_retina.py/.exe -    Python script for pentesters to take Retina's Remediation report to .mht and show CVE's with exploits and what frameworks have working exploits.
+retina.py/.exe -    Python script for pentesters to take Retina's Remediation report to .mht and show CVE's with exploits and what frameworks have working exploits.
 
-vzp_nessus.py/.exe -    Python script for pentesters to take Nessus .nessus xml and show CVE's with exploits and what frameworks have working exploits.
+nessus.py/.exe -    Python script for pentesters to take Nessus .nessus xml and show CVE's with exploits and what frameworks have working exploits.
 
 
 
-vzp-vulnexp-macro.bas
+retinamacro.bas
 
 
 If you go to the report tab in retina, choose vulnerability export, and save the retina scans out to xml, you can import those xml files into Excel.  the vzp-vulnexp-macro.bas is an Excel macro to auto color, format, and sort using 4 different fields and making 4 different worksheets to help get solid data output, analysis, and numbers.
@@ -32,10 +32,10 @@ If you go to the report tab in retina, choose vulnerability export, and save the
 
 
 
-remediation.py
+retina.py
 
 Usage:
-python remediation.py inputfilename.mht
+python retina.py inputfilename.mht
 remediation.exe inputfilename.mht
 asks for a report name and outputs to csv.
 
@@ -57,7 +57,7 @@ asks for a report name and outputs to csv.
 
 
 
-Using the remediation tab in Retina, you can export a remediation report on each scan out to an MHT file.  The remediation.py script is a python script that will parse the data and produce a table in html (poorly) and csv that lists the CVEs found that have an exploit in Core Impact or Metasploit, which of  Core Impact or Metasploit have an exploit module for it (or both), how many systems are potentially affected, and what the IP addresses of those systems are.  This is useful for showing the accuracy or Retina and the protection capability of your AV/HIPS/etc.  Once the exploitation is done, go back through to see how many vulnerabilities retina reported that were not actually exploitable (false positives) and how many vulnerabilities that were successfully exploited that retina didn't report on (false negatives).  The results are pleasing, exciting, and surprising.
+Using the remediation tab in Retina, you can export a remediation report on each scan out to an MHT file.  The retina.py script is a python script that will parse the data and produce a table in html (poorly) and csv that lists the CVEs found that have an exploit in Core Impact or Metasploit, which of  Core Impact or Metasploit have an exploit module for it (or both), how many systems are potentially affected, and what the IP addresses of those systems are.  This is useful for showing the accuracy or Retina and the protection capability of your AV/HIPS/etc.  Once the exploitation is done, go back through to see how many vulnerabilities retina reported that were not actually exploitable (false positives) and how many vulnerabilities that were successfully exploited that retina didn't report on (false negatives).  The results are pleasing, exciting, and surprising.
 
 I have to output many remediation reports, which leads to a lot of .mht files.  The script is setup that it doesn't care about the html formatting, so I cat the files into one with:  'cat *.mht >> output'.  I then rename the output file to a .mht and use it for parsing.  This way I can take all the scans and get one report file that is useful for my needs.
 
