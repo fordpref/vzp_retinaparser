@@ -1,7 +1,7 @@
 vzp-vulnexp-readme
 ==================
 
-vzp-vulnexp-macro.bas
+retinamacro.bas
 
 
 If you go to the report tab in retina, choose vulnerability export, and save the retina scans out to xml, you can import those xml files into Excel.  the vzp-vulnexp-macro.bas is an Excel macro to auto color, format, and sort using 4 different fields and making 4 different worksheets to help get solid data output, analysis, and numbers.
