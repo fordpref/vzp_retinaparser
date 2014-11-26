@@ -11,6 +11,23 @@ nessus.py/.exe -    Python script for pentesters to take Nessus .nessus xml and 
 
 
 
+nessus.py
+Usage:
+Linux:
+python nessus.py
+Windows:
+nessus.exe
+
+It asks for the directory, and then a report name.  It will output a CSV file
+that you can open in libreoffice or excel.  Right now it sorts by canvas then remote/local,
+metasploit then remote/local, Core Impact then remote/local, then just exploits remote/local.
+Working on asking for sort order and a way to update keywords to disposition the vulnerabilities
+as local or remote.  Should be coming soon.  Going to try to do the same with the retina reports.
+
+
+
+
+
 retinamacro.bas
 
 
