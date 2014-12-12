@@ -1,0 +1,9 @@
+('J:\\Users\\fordpref\\Documents\\GitHub\\vzp_vulnscan_parsers\\dist\\nessus.exe',
+ True,
+ False,
+ None,
+ None,
+ [],
+ None,
+ True,
+ 1418412759L)

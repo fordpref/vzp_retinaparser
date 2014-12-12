@@ -180,7 +180,7 @@ def parse():
                 'bash', 'wget', 'xulrunner', 'Windows Theme', 'Fax Cover', 'Windows Movie', 'Windows Media',
                 'Service Path', 'Windows Image', 'dbus', 'glibc', 'firefox', 'GDI+', 'Codec', 'linux-',
                 'Library', 'XML', 'Wordpad', 'Help', 'avahi', 'perl', 'python', 'Address Book', 'jdk',
-                'Windows Object', 'MPEG', 'libxfont', 'Microsoft Office']
+                'Windows Object', 'MPEG', 'libxfont', 'Microsoft Office', 'Adobe', 'Java', 'jre', ]
 
     remcheck = ['RPC', 'DNS', 'dhcp', 'openssl', 'apache',  'samba', 'SMB', 'php', 'Print Spooler',
                 'Networking Components', 'tomcat', 'mysql', 'OpenSSL', 'Remote Desktop', 'postgres',
@@ -215,7 +215,7 @@ def parse():
                 next
             # Now we parse the  ReportItem
             else:
-                if name in vuln:        #if the name is a key already, check to see if we need to add the IP address, then skip if not.
+                if name in vuln:        #if the name is a key already, check to see if we need to add the IP address, then skip if not.    
                     if ip in vuln[name]['IP']:
                         next
                     else:
@@ -229,86 +229,87 @@ def parse():
                         
                 #Now we try to find if the exploit_available tag is present, and if yes, fill out the rest of the fields
                 #try:
-                try:
-                    expstate = reportitem.find('exploit_available')
-                except:
-                    next
-                if expstate is None:
-                    next
-                elif expstate.text != 'true':
-                    next
                 else:
-                    print repitem['pluginName'] + ' is exploitable.'    #Makes sure you know the program is working and gives you quick view of exploits
-                expstate = ''
-                for x in loccheck:
-                    if x.lower() in name.lower():
-                        vector = 'Local'
-                        break
-                for x in remcheck:
-                    if x.lower() in name.lower():
-                        if vector == 'Local':
-                            vector == 'Conflict'
-                            break
-                        vector = 'Remote'
-                        break
-                # If we are here, then it should be the first time we have seen this vulnerability, so setup vuln dictionary
-                vuln[name]= {}      # name is the pluginName from earlier
-                vuln[name]['id'] = str(repitem['pluginID'])     #store pluginID
-                vuln[name]['CVE'] = []      #put the CVEs in an array
-                vuln[name]['Vector'] = vector
-                vuln[name]['Successful'] = ''
-                vuln[name]['IP'] = []       #put the IP addresses in an array
-                vuln[name]['IP'].append(ip) #if first time through append current IP to the array
-                vuln[name]['exploit'] = True        # If you get here, then there is at least an exploit
-                vuln[name]['core'] = False          # setup core field
-                vuln[name]['canvas'] = False        # Setup canvas field
-                vuln[name]['metasploit'] = {}       # setup metasploit fields
-                vuln[name]['metasploit']['avail'] = False
-                vuln[name]['metasploit']['name'] = ''
-
-                # checks for core impact exploit
-                try:
-                    core = reportitem.find('exploit_framework_core').text
-                    vuln[name]['core'] = True
-                except:
-                    vuln[name]['core'] = False
-
-                # checks for metasploit exploit
-                try:
-                    meta = reportitem.find('exploit_framework_metasploit').text
-                    vuln[name]['metasploit']['avail'] = True
-                    vuln[name]['metasploit']['name'] = reportitem.find('metasploit_name').text
-                except:
-                    vuln[name]['metasploit']['avail'] = False
-                    vuln[name]['metasploit']['name'] = 'n/a'
-
-                # checks for cnavas exploit
-                try:
-                    canv = reportitem.find('exploit_framework_canvas').text
-                    vuln[name]['canvas'] = True
-                except:
-                    vuln[name]['canvas'] = False
-
-                # Loop through CVE tags and collect the CVEs.  We don't know which is actually responsible and Nessus doesn't tell us.
-                cve = []
-                for x in reportitem.findall('cve'):
-                    cve.append(x.text)
-                cve.sort()
-                vuln[name]['CVE']= ':'.join(cve)
-                if vuln[name]['canvas'] == True or vuln[name]['metasploit']['avail'] == True or vuln[name]['core'] == True:
-                    if ip in iprep:
-                        iprep[ip].append((vuln[name]['CVE'], name, vuln[name]['Vector'], vuln[name]['Successful'], str(vuln[name]['exploit']), str(vuln[name]['core']), str(vuln[name]['canvas']), str(vuln[name]['metasploit']['avail']), vuln[name]['metasploit']['name']))
+                    try:
+                        expstate = reportitem.find('exploit_available')
+                    except:
+                        next
+                    if expstate is None:
+                        next
+                    elif expstate.text != 'true':
+                        next
                     else:
-                        iprep[ip] = []
-                        iprep[ip].append((vuln[name]['CVE'], name, vuln[name]['Vector'], vuln[name]['Successful'], str(vuln[name]['exploit']), str(vuln[name]['core']), str(vuln[name]['canvas']), str(vuln[name]['metasploit']['avail']), vuln[name]['metasploit']['name']))
-                cve = []
-                vector = ''
-                #else:
-                #    next
-                #except:
-                #    vector = ''
-                #    print '\n\n****\nError with ' + ip + '\n****\n\n'
-                #    next
+                        pass # print repitem['pluginName'] + ' is exploitable.'    #Makes sure you know the program is working and gives you quick view of exploits
+                    expstate = ''
+                    for x in loccheck:
+                        if x.lower() in name.lower():
+                            vector = 'Local'
+                            break
+                    for x in remcheck:
+                        if x.lower() in name.lower():
+                            if vector == 'Local':
+                                vector == 'Conflict'
+                                break
+                            vector = 'Remote'
+                            break
+                    # If we are here, then it should be the first time we have seen this vulnerability, so setup vuln dictionary
+                    vuln[name]= {}      # name is the pluginName from earlier
+                    vuln[name]['id'] = str(repitem['pluginID'])     #store pluginID
+                    vuln[name]['CVE'] = []      #put the CVEs in an array
+                    vuln[name]['Vector'] = vector
+                    vuln[name]['Successful'] = ''
+                    vuln[name]['IP'] = []       #put the IP addresses in an array
+                    vuln[name]['IP'].append(ip) #if first time through append current IP to the array
+                    vuln[name]['exploit'] = True        # If you get here, then there is at least an exploit
+                    vuln[name]['core'] = False          # setup core field
+                    vuln[name]['canvas'] = False        # Setup canvas field
+                    vuln[name]['metasploit'] = {}       # setup metasploit fields
+                    vuln[name]['metasploit']['avail'] = False
+                    vuln[name]['metasploit']['name'] = ''
+
+                    # checks for core impact exploit
+                    try:
+                        core = reportitem.find('exploit_framework_core').text
+                        vuln[name]['core'] = True
+                    except:
+                        vuln[name]['core'] = False
+
+                    # checks for metasploit exploit
+                    try:
+                        meta = reportitem.find('exploit_framework_metasploit').text
+                        vuln[name]['metasploit']['avail'] = True
+                        vuln[name]['metasploit']['name'] = reportitem.find('metasploit_name').text
+                    except:
+                        vuln[name]['metasploit']['avail'] = False
+                        vuln[name]['metasploit']['name'] = 'n/a'
+
+                    # checks for cnavas exploit
+                    try:
+                        canv = reportitem.find('exploit_framework_canvas').text
+                        vuln[name]['canvas'] = True
+                    except:
+                        vuln[name]['canvas'] = False
+
+                    # Loop through CVE tags and collect the CVEs.  We don't know which is actually responsible and Nessus doesn't tell us.
+                    cve = []
+                    for x in reportitem.findall('cve'):
+                        cve.append(x.text)
+                    cve.sort()
+                    vuln[name]['CVE']= ':'.join(cve)
+                    if vuln[name]['canvas'] == True or vuln[name]['metasploit']['avail'] == True or vuln[name]['core'] == True:
+                        if ip in iprep:
+                            iprep[ip].append((vuln[name]['CVE'], name, vuln[name]['Vector'], vuln[name]['Successful'], str(vuln[name]['exploit']), str(vuln[name]['core']), str(vuln[name]['canvas']), str(vuln[name]['metasploit']['avail']), vuln[name]['metasploit']['name']))
+                        else:
+                            iprep[ip] = []
+                            iprep[ip].append((vuln[name]['CVE'], name, vuln[name]['Vector'], vuln[name]['Successful'], str(vuln[name]['exploit']), str(vuln[name]['core']), str(vuln[name]['canvas']), str(vuln[name]['metasploit']['avail']), vuln[name]['metasploit']['name']))
+                    cve = []
+                    vector = ''
+                    #else:
+                    #    next
+                    #except:
+                    #    vector = ''
+                    #    print '\n\n****\nError with ' + ip + '\n****\n\n'
+                    #    next
             vector = ''                            
         vector = ''
 
